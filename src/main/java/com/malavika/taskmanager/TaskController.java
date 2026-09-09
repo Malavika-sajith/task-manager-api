@@ -29,11 +29,16 @@ public class TaskController {
     }
     @DeleteMapping("/tasks/{id}")
     public void deleteTask(@PathVariable Long id){
+        if(!taskRepository.existsById(id)){
+            throw new TaskNotFoundException(id);
+        }
         taskRepository.deleteById(id);
     }
+
     @PutMapping("/tasks/{id}")
     public Task updateTask(@PathVariable Long id, @RequestBody Task updatedTask){
-        Task existingTask = taskRepository.findById(id).orElseThrow();
+        Task existingTask = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
 
         existingTask.setTitle(updatedTask.getTitle());
         existingTask.setCompleted(updatedTask.isCompleted());
