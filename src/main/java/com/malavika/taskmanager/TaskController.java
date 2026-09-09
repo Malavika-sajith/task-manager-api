@@ -30,5 +30,14 @@ public class TaskController {
     public void deleteTask(@PathVariable Long id){
         taskRepository.deleteById(id);
     }
+    @PutMapping("/tasks/{id}")
+    public Task updateTask(@PathVariable Long id, @RequestBody Task updatedTask){
+        Task existingTask = taskRepository.findById(id).orElseThrow();
+
+        existingTask.setTitle(updatedTask.getTitle());
+        existingTask.setCompleted(updatedTask.isCompleted());
+
+        return taskRepository.save(existingTask);
+    }
 
 }
