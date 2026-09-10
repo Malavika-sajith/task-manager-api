@@ -22,4 +22,17 @@ public class AuthController {
         user.setPassword(hashedPassword);
         return userRepository.save(user);
     }
+    @PostMapping("/login")
+    public String login(@RequestBody User loginRequest){
+        User existingUser = userRepository.findByUsername(loginRequest.getUsername())
+                .orElseThrow(InvalidCredentialsException :: new);
+
+        boolean passwordMatches = passwordEncoder.matches(loginRequest.getPassword(), existingUser.getPassword());
+
+        if(!passwordMatches){
+            throw new InvalidCredentialsException();
+
+        }
+        return "Login Successful!(Token generation comes next)";
+    }
 }

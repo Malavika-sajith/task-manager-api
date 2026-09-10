@@ -13,4 +13,9 @@ public class GlobalExceptionHandler {
     public String handleTaskNotFound(TaskNotFoundException ex) {
         return ex.getMessage();
     }
+    @ExceptionHandler(InvalidCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String handleInvalidCredentials(InvalidCredentialsException ex){
+        return ex.getMessage();
+    }
 }
