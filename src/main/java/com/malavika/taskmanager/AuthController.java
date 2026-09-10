@@ -10,10 +10,12 @@ public class AuthController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder){
+    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/signup")
@@ -33,6 +35,6 @@ public class AuthController {
             throw new InvalidCredentialsException();
 
         }
-        return "Login Successful!(Token generation comes next)";
+        return jwtUtil.generateToken(existingUser.getUsername());
     }
 }
