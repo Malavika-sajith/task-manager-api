@@ -1,8 +1,5 @@
 package com.malavika.taskmanager;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 
@@ -19,15 +16,21 @@ public class Task {
 
     private boolean completed;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Long getId(){
         return id;
     }
 
     public void setId(long id) {
+
         this.id = id;
     }
 
     public String getTitle(){
+
         return title;
     }
 
@@ -35,10 +38,20 @@ public class Task {
         this.title = title;
     }
     public boolean isCompleted(){
+
         return completed;
     }
 
     public void setCompleted(boolean completed) {
+
         this.completed = completed;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
