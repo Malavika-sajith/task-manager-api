@@ -9,6 +9,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.List;
@@ -55,5 +57,31 @@ class TaskControllerTest {
         List<Task> result = taskController.getAllTasks();
 
         assertEquals(2, result.size());
+    }
+    @Test
+    void testCreateTask() {
+        User fakeUser = new User();
+        fakeUser.setId(1L);
+        fakeUser.setUsername("testuser");
+
+        Task newTask = new Task();
+        newTask.setTitle("New Task");
+
+        when(userRepository.findByUsername("testuser")).thenReturn(java.util.Optional.of(fakeUser));
+        when(taskRepository.save(newTask)).thenReturn(newTask);
+
+        Task result = taskController.createTask(newTask);
+
+        assertEquals("New Task", result.getTitle());
+        assertEquals(fakeUser, result.getUser());
+        verify(taskRepository).save(newTask);
+    }
+    @Test
+    void testDeleteTask_TaskNotFound() {
+        when(taskRepository.existsById(99L)).thenReturn(false);
+
+        assertThrows(TaskNotFoundException.class, () -> {
+            taskController.deleteTask(99L);
+        });
     }
 }
